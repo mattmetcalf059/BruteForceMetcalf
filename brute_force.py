@@ -16,8 +16,9 @@ start_time = time.time()
 
 for password in password_combinations:
     password = "".join(password)
-    result = subprocess.run(["./vault.o", password], capture_output=True, text=True)
-    if result.returncode == 0:
+    process = subprocess.Popen(["./vault.o", password], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    if process.returncode == 0:
         print(f"Success! The password is {password}")
         break
     else:
