@@ -1,27 +1,27 @@
-import subprocess
+import itertools
 import string
 import time
+import os
 
-def crack_password():
-    start = time.time()
-    chars = string.ascii_lowercase
-    attempts = 0
-    password = []
-    while True:
-        for char in chars:
-            attempts += 1
-            guess = "".join(password + [char])
-            result = subprocess.run(["./vault.o", guess], capture_output=True)
-            output = result.stdout.decode().strip()
-            if output == "Success":
-                print("Password found:", guess)
-                return
-            elif output == "Wrong password":
-                continue
-            else:
-                print("Unexpected output:", output)
-                return
-        password.append(chars[0])
+# Define the set of characters to use for the password
+chars = string.ascii_lowercase
 
-if __name__ == "__main__":
-    crack_password()
+# Define the length of the password
+password_length = 8
+
+# Create a generator that yields all possible combinations of the characters
+password_combinations = itertools.chain.from_iterable(itertools.product(chars, repeat=i) for i in range(1, password_length + 1))
+
+start_time = time.time()
+
+# Iterate through each combination of characters
+for combination in password_combinations:
+    password = ''.join(combination)
+    result = os.system(f"./vault.o {password}")
+
+    if result == 0:
+        print(f"Success! The password is: {password}")
+        print(f"Time elapsed: {time.time() - start_time:.2f} seconds")
+        break
+
+print(f"Time elapsed: {time.time() - start_time:.2f} seconds")
