@@ -1,7 +1,7 @@
 import itertools
 import string
 import time
-import os
+import subprocess
 
 # Define the set of characters to use for the password
 chars = string.ascii_lowercase
@@ -14,14 +14,14 @@ password_combinations = itertools.chain.from_iterable(itertools.product(chars, r
 
 start_time = time.time()
 
-# Iterate through each combination of characters
-for combination in password_combinations:
-    password = ''.join(combination)
-    result = os.system(f"./vault.o {password}")
-
-    if result == 0:
-        print(f"Success! The password is: {password}")
-        print(f"Time elapsed: {time.time() - start_time:.2f} seconds")
+for password in password_combinations:
+    password = "".join(password)
+    result = subprocess.run(["./vault.o", password], capture_output=True, text=True)
+    if result.returncode == 0:
+        print(f"Success! The password is {password}")
         break
+    else:
+        print(f"Wrong Password: {password}")
 
-print(f"Time elapsed: {time.time() - start_time:.2f} seconds")
+end_time = time.time()
+print(f"Elapsed time: {end_time - start_time:.2f} seconds")
