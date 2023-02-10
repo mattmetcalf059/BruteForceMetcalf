@@ -1,27 +1,18 @@
-import itertools
-import string
-import time
 import subprocess
+import time
+import itertools
 
-# Define the set of characters to use for the password
-chars = string.ascii_lowercase
+start = time.time()
 
-# Define the length of the password
-password_length = 8
+alphabet = "abcdefghijklmnopqrstuvwxyz"
+password_length = 6
 
-# Create a generator that yields all possible combinations of the characters
-password_combinations = itertools.chain.from_iterable(itertools.product(chars, repeat=i) for i in range(1, password_length + 1))
-
-start_time = time.time()
-
-for password in password_combinations:
-    password = "".join(password)
-    result = subprocess.run(["./vault.o", password], capture_output=True, text=True)
-    if result.returncode == 0:
-        print(f"Success! The password is {password}")
+for password_tuple in itertools.product(alphabet, repeat=password_length):
+    password = "".join(password_tuple)
+    result = subprocess.run(["./vault.o", password], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if b"Success" in result.stdout:
+        print("Found password:", password)
         break
-    else:
-        print(f"Wrong Password: {password}")
 
-end_time = time.time()
-print(f"Elapsed time: {end_time - start_time:.2f} seconds")
+end = time.time()
+print("Elapsed time:", end - start, "seconds")
