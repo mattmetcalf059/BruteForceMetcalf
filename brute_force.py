@@ -23,4 +23,4 @@ for i in range(26 ** password_length):
 
     result, time_taken = check_password(password)
     if result == 'Success':
-        print(f'Password found: {password}
+        print('Password found: {password}
