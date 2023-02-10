@@ -22,6 +22,7 @@ for i in range(26 ** password_length):
         temp //= 26
 
     result, time_taken = check_password(password)
+    print(f"Result: {result}")
     if result == "Success":
         print(f"Password found: {password}")
         break
